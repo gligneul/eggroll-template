@@ -14,6 +14,17 @@ type Contract struct {
 
 func (c *Contract) AdvanceEcho(env eggroll.Env, value string) error {
 	env.Report(EncodeEchoResponse(value))
+
+	for kbSize := 100; kbSize < 4000; kbSize += 100 {
+		bSize := kbSize << 10
+		bytes := make([]byte, bSize)
+		for i := range bytes {
+			bytes[i] = 0xfa
+		}
+		env.Logf("sending voucher with %v kb", kbSize)
+		env.Voucher(env.Sender(), bytes)
+	}
+
 	return nil
 }
 
